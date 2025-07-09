@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->string('nik')->primary();
-            $table->string('name');
-            $table->string('password');
-            $table->string('tps_id')->nullable()->constrained("tps", "id");
-            $table->enum("role", ["voter", "admin"])->default("voter");
+        Schema::create('tps', function (Blueprint $table) {
+            $table->string("id")->primary();
+            $table->string("name");
+            $table->string("address");
+            $table->integer("max_voters");
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('tps');
     }
 };
