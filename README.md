@@ -7,60 +7,99 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🕸 Laravel App – `README.md`
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+```markdown
+# Blockchain Voting System – Laravel (Off-Chain Management)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+This Laravel app handles the off-chain part of a blockchain voting system using Hyperledger Fabric. It manages users, TPS registration, and interfaces with the blockchain via REST.
 
-## Learning Laravel
+## 📁 Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Admin panel to manage:
+  - Users
+  - TPS
+- Voter dashboard:
+  - View TPS assignment
+  - Cast vote (one-time)
+- Blockchain Integration via HTTP:
+  - Register TPS and users
+  - Record vote on blockchain
+  - Sync vote result summary
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Setup
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 1. Clone the Repository
 
-## Laravel Sponsors
+```bash
+git clone <your-laravel-repo-url>
+cd <your-laravel-folder>
+````
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### 2. Install Dependencies
 
-### Premium Partners
+```bash
+composer install
+npm install && npm run dev
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### 3. Configure Environment
 
-## Contributing
+Copy `.env.example` to `.env` and update DB credentials.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+cp .env.example .env
+php artisan key:generate
+```
 
-## Code of Conduct
+### 4. Migrate & Seed
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+```bash
+php artisan migrate
+php artisan db:seed
+```
 
-## Security Vulnerabilities
+This will also make HTTP requests to register TPS and users on the blockchain via:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+* `/api/assets` – for each TPS
+* `/api/register` – for each voter
 
-## License
+### 5. Run the App
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+php artisan serve
+```
+
+App available at: [http://localhost:8000](http://localhost:8000)
+
+## 👥 User Roles
+
+* **Admin**: Can create TPS and assign voters
+* **Voter**: Can log in and cast vote once
+
+## 🌐 Routes Overview
+
+| Route        | Role  | Description            |
+| ------------ | ----- | ---------------------- |
+| `/login`     | All   | Login screen           |
+| `/dashboard` | Voter | Cast vote + see status |
+| `/users`     | Admin | Manage users           |
+| `/tps`       | Admin | Manage TPS             |
+
+## 📡 Blockchain Communication
+
+Laravel uses `Http::post()` to call endpoints from Hyperledger REST API:
+
+* Cast vote
+* Register users
+* Send summarized vote results
+
+See `VoteController`, `UserSeeder`, and `TpsSeeder` for usage.
+
+## 📌 Notes
+
+* Users are manually seeded; there’s no public registration.
+* `nik` is used as blockchain user ID.
+* Votes are marked on both DB and blockchain for syncing.
+* No vote contents are stored, only participation and counts.
