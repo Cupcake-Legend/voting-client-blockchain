@@ -27,14 +27,22 @@ class TpsSeeder extends Seeder
 
         foreach ($tpsList as $tps) {
             Tps::create([
-                'id' => $tps['id'], 
+                'id' => $tps['id'],
                 'name' => $tps['name'],
                 'address' => $tps['address'],
                 'max_voters' => $tps['max_voters'],
             ]);
 
+            dump([
+                'id' => $tps['id'],
+                'name' => $tps['name'],
+                'totalVoters' => $tps['max_voters'],
+            ]);
+
+
+            
             try {
-                Http::post('http://localhost:3000/api/tps', [
+                Http::post('http://172.26.140.53:3000/api/tps', [
                     'id' => $tps['id'],
                     'name' => $tps['name'],
                     'totalVoters' => $tps['max_voters'],

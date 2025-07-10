@@ -23,7 +23,7 @@ class VoteController extends Controller
             return redirect()->route('dashboard')->with('success', 'You have already voted.');
         }
 
-        $response = Http::post('http://localhost:3000/api/vote', [
+        $response = Http::post('http://172.26.140.53:3000/api/vote', [
             'tpsId' => $user->tps->id,
             'userId' => $user->nik,
         ]);
@@ -47,7 +47,7 @@ class VoteController extends Controller
         $totalVotesB = 30;
 
         try {
-            $response = Http::post('http://localhost:3000/api/vote-results', [
+            $response = Http::post('http://172.26.140.53:3000/api/vote-results', [
                 'tpsId' => $tps->id,
                 'paslonA' => $totalVotesA,
                 'paslonB' => $totalVotesB,

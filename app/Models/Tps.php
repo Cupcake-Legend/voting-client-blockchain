@@ -17,8 +17,12 @@ class Tps extends Model
 
     protected $table = "tps";
 
+    protected $primaryKey = "id";
+    public $incrementing = false;
+    protected $keyType = 'string';
+
     public function users()
     {
-       return $this->hasMany(User::class);
+        return $this->hasMany(User::class);
     }
 }
