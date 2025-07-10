@@ -11,17 +11,18 @@ class VoteController extends Controller
 {
     public function index()
     {
-        $hasVoted = auth()->user()->has_voted;
-        return view('vote.index', compact('hasVoted'));
+        //$hasVoted = auth()->user()->has_voted;
+        return view('vote.index');
     }
 
     public function store(Request $request)
     {
-        $user = User::find(auth()->user()->id);
+        $user = auth()->user();
 
-        if ($user->has_voted) {
-            return redirect()->route('dashboard')->with('success', 'You have already voted.');
-        }
+
+        // if ($user->has_voted) {
+        //     return redirect()->route('dashboard')->with('success', 'You have already voted.');
+        // }
 
         $response = Http::post('http://172.26.140.53:3000/api/vote', [
             'tpsId' => $user->tps->id,
@@ -32,34 +33,48 @@ class VoteController extends Controller
             return redirect()->route('dashboard')->with('error', 'Failed to record vote on blockchain.');
         }
 
-        $user->has_voted = true;
-        $user->save();
+        // $user->has_voted = true;
+        // $user->save();
 
         return redirect()->route('dashboard')->with('success', 'Vote successfully cast!');
     }
 
-    public function updateVoteResults($tpsId)
+    public function showVoteResultForm()
     {
-        $tps = Tps::findOrFail($tpsId);
+        $tpsList = Tps::all();
+        return view('tps.vote-results', compact('tpsList'));
+    }
 
-        // These totals can be based on whatever local storage you use
-        $totalVotesA = 50; // Replace with actual count
-        $totalVotesB = 30;
+    public function submitVoteResults(Request $request)
+    {
+        $request->validate([
+            'tps_id' => 'required|exists:tps,id',
+            'votes_paslonA' => 'required|integer|min:0',
+            'votes_paslonB' => 'required|integer|min:0',
+        ]);
+
+        $tps = Tps::findOrFail($request->tps_id);
+        $totalA = (int) $request->votes_paslonA;
+        $totalB = (int) $request->votes_paslonB;
+
+        if ($totalA + $totalB > $tps->max_voters) {
+            return back()->with('error', "Total votes ({$totalA} + {$totalB}) exceed max voters for {$tps->name} ({$tps->max_voters}).");
+        }
 
         try {
-            $response = Http::post('http://172.26.140.53:3000/api/vote-results', [
+            $res = Http::post('http://172.26.140.53:3000/api/vote-results', [
                 'tpsId' => $tps->id,
-                'paslonA' => $totalVotesA,
-                'paslonB' => $totalVotesB,
+                'paslonA' => $totalA,
+                'paslonB' => $totalB,
             ]);
 
-            if ($response->successful()) {
-                return back()->with('success', 'Vote results updated on blockchain.');
+            if ($res->successful()) {
+                return back()->with('success', "✅ Vote results submitted successfully for {$tps->name}.");
             } else {
-                return back()->with('error', 'Failed to update blockchain.');
+                return back()->with('error', "❌ Blockchain rejected the submission for {$tps->name}: " . $res->body());
             }
         } catch (\Exception $e) {
-            return back()->with('error', 'Error: ' . $e->getMessage());
+            return back()->with('error', "🔥 Error sending to blockchain: " . $e->getMessage());
         }
     }
 }

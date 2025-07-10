@@ -24,6 +24,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('tps', TPSController::class);
+    Route::get('/admin/vote-results', [VoteController::class, 'showVoteResultForm'])->name('vote-results.form');
+    Route::post('/admin/vote-results', [VoteController::class, 'submitVoteResults'])->name('vote-results.submit');
 });
 
 // Voter-only

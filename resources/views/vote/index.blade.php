@@ -10,13 +10,10 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
 
-        @if ($hasVoted)
-            <div class="alert alert-info">You have already voted.</div>
-        @else
-            <form action="{{ route('vote.store') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Cast Vote</button>
-            </form>
-        @endif
+
+        <form action="{{ route('vote.store') }}" method="POST">
+            @csrf
+            <button type="submit" class="btn btn-primary">Cast Vote</button>
+        </form>
     </div>
 @endsection

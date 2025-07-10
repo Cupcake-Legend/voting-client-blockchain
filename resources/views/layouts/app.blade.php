@@ -25,6 +25,9 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('tps.index') }}">TPS</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ route('vote-results.form') }}">TPS Results</a>
+                            </li>
                         @elseif(auth()->user()->role === 'voter')
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>

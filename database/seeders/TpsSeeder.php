@@ -15,13 +15,13 @@ class TpsSeeder extends Seeder
                 'id' => 'TPS1',
                 'name' => 'TPS 001',
                 'address' => 'Kelurahan A',
-                'max_voters' => 100,
+                'max_voters' => 3,
             ],
             [
                 'id' => 'TPS2',
                 'name' => 'TPS 002',
                 'address' => 'Kelurahan B',
-                'max_voters' => 80,
+                'max_voters' => 2,
             ],
         ];
 
